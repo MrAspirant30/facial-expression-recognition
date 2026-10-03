@@ -1,0 +1,20 @@
+{
+  "model_name": "HOG + Linear SVM",
+  "dataset": "FER2013 (clean_dataset_split)",
+  "train_samples": 22347,
+  "validation_samples": 5586,
+  "test_samples": 7178,
+  "hog_orientations": 9,
+  "hog_pixels_per_cell": "(8, 8)",
+  "hog_cells_per_block": "(2, 2)",
+  "hog_block_norm": "L2-Hys",
+  "hog_feature_dimension": 900,
+  "svm_classifier": "LinearSVC",
+  "svm_C": 1.0,
+  "svm_random_state": 42,
+  "accuracy": 0.426442,
+  "macro_precision": 0.394989,
+  "macro_recall": 0.355888,
+  "macro_f1": 0.355335,
+  "training_runtime_seconds": 96.79
+}

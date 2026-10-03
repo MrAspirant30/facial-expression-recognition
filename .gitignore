@@ -1,0 +1,19 @@
+# Data
+data/fer2013/
+
+# Extracted HOG feature caches
+results/features/
+*.npy
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.env
+
+# Logs and temporary files
+*.tmp
+*.log

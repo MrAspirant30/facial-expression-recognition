@@ -1,0 +1,123 @@
+{
+  "dataset_manifest": "data\\fer2013\\archive\\clean_dataset_split.csv",
+  "dataset_counts": {
+    "train": 22347,
+    "validation": 5586,
+    "test": 7178
+  },
+  "image_dimensions": [
+    48,
+    48
+  ],
+  "image_preprocessing": "scaled to [0.0, 1.0], grayscale float32",
+  "hog_parameters": {
+    "orientations": 9,
+    "pixels_per_cell": [
+      8,
+      8
+    ],
+    "cells_per_block": [
+      2,
+      2
+    ],
+    "block_norm": "L2-Hys"
+  },
+  "hog_feature_dimension": 900,
+  "svm_parameters": {
+    "classifier": "LinearSVC",
+    "C": 1.0,
+    "random_state": 42,
+    "max_iter": 2000
+  },
+  "environment": {
+    "python_version": "3.13.7",
+    "os": "Windows 11",
+    "processor": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel"
+  },
+  "runtimes": {
+    "train_hog_extraction_seconds": 312.62,
+    "test_hog_extraction_seconds": 67.74,
+    "svm_training_runtime_seconds": 96.75,
+    "evaluation_runtime_seconds": 0.04
+  },
+  "actual_test_metrics": {
+    "accuracy": 0.426442,
+    "macro_precision": 0.394989,
+    "macro_recall": 0.355888,
+    "macro_f1": 0.355335
+  },
+  "confusion_matrix": [
+    [
+      246,
+      2,
+      80,
+      240,
+      170,
+      144,
+      76
+    ],
+    [
+      32,
+      12,
+      12,
+      21,
+      12,
+      19,
+      3
+    ],
+    [
+      100,
+      1,
+      182,
+      235,
+      178,
+      162,
+      166
+    ],
+    [
+      67,
+      2,
+      51,
+      1379,
+      102,
+      125,
+      48
+    ],
+    [
+      97,
+      2,
+      86,
+      302,
+      510,
+      162,
+      74
+    ],
+    [
+      132,
+      8,
+      101,
+      358,
+      286,
+      307,
+      55
+    ],
+    [
+      54,
+      3,
+      69,
+      148,
+      94,
+      38,
+      425
+    ]
+  ],
+  "class_names": [
+    "angry",
+    "disgust",
+    "fear",
+    "happy",
+    "neutral",
+    "sad",
+    "surprise"
+  ]
+}

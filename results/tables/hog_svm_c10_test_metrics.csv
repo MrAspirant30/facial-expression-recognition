@@ -1,0 +1,2 @@
+model_name,dataset,train_samples,validation_samples,test_samples,hog_orientations,hog_pixels_per_cell,hog_cells_per_block,hog_block_norm,hog_feature_dimension,svm_classifier,svm_C,svm_random_state,svm_max_iter,accuracy,macro_precision,macro_recall,macro_f1,training_runtime_seconds
+HOG + Linear SVM (C=10.0),FER2013 (clean_dataset_split),22347,5586,7178,9,"(8, 8)","(2, 2)",L2-Hys,900,LinearSVC,10.0,42,2000,0.422402,0.369111,0.361824,0.35712,85.69
