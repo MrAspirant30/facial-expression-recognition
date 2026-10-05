@@ -1,0 +1,2 @@
+model_name,dataset,hog_orientations,hog_pixels_per_cell,hog_cells_per_block,hog_block_norm,hog_feature_dimension,classifier,svm_C,svm_class_weight,svm_random_state,svm_max_iter,svm_dual,train_samples,validation_samples,combined_training_samples,test_samples,accuracy,macro_precision,macro_recall,macro_f1,training_runtime_seconds,evaluation_runtime_seconds
+"Final HOG + Linear SVM (C=0.35, balanced)",FER2013 (clean_dataset_split),9,"(8, 8)","(2, 2)",L2-Hys,900,LinearSVC,0.35,balanced,42,2000,auto,22347,5586,27933,7178,0.40652,0.348707,0.408931,0.348627,67.02,0.061

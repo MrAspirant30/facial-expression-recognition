@@ -1,0 +1,4 @@
+candidate,C,class_weight,accuracy,macro_precision,macro_recall,macro_f1,train_runtime_sec,val_runtime_sec
+HOG4_C1.0_none,1.0,None,0.375403,0.31489,0.314909,0.314506,1164.37,0.763
+HOG4_C10.0_none,10.0,None,0.345686,0.293272,0.293459,0.293284,2311.27,0.97
+HOG4_C0.5_balanced,0.5,balanced,0.377014,0.317138,0.322546,0.319371,771.28,0.938

@@ -1,0 +1,6 @@
+candidate,C,class_weight,accuracy,macro_precision,macro_recall,macro_f1,train_runtime_sec,val_runtime_sec
+LinearSVC_C0.25_balanced,0.25,balanced,0.406194,0.344888,0.391621,0.344282,68.66,0.137
+LinearSVC_C0.35_balanced,0.35,balanced,0.407626,0.346265,0.393048,0.3463,75.3,0.028
+LinearSVC_C0.50_balanced (Existing Champion),0.5,balanced,0.407089,0.346172,0.390974,0.345841,70.49,0.021
+LinearSVC_C0.65_balanced,0.65,balanced,0.405657,0.344747,0.386689,0.344513,93.13,0.028
+LinearSVC_C0.75_balanced,0.75,balanced,0.405299,0.344155,0.386045,0.344136,91.33,0.03

@@ -1,0 +1,8 @@
+name,model_family,C,class_weight,scaler,accuracy,macro_precision,macro_recall,macro_f1,train_time_sec,val_time_sec
+LinearSVC_C1.0_none (V1 Baseline),LinearSVC,1.0,None,None,0.419979,0.341107,0.336099,0.329909,64.91,0.029
+LinearSVC_C10.0_none (V1 Best C),LinearSVC,10.0,None,None,0.417114,0.352453,0.349473,0.344086,77.42,0.033
+LinearSVC_C0.1_balanced,LinearSVC,0.1,balanced,None,0.403688,0.342974,0.396579,0.341414,40.76,0.02
+LinearSVC_C0.5_balanced,LinearSVC,0.5,balanced,None,0.407089,0.346172,0.390974,0.345841,57.44,0.026
+LinearSVC_C1.0_balanced,LinearSVC,1.0,balanced,None,0.404046,0.343441,0.38463,0.343331,63.46,0.025
+LinearSVC_C5.0_balanced,LinearSVC,5.0,balanced,None,0.400107,0.338961,0.369463,0.338007,77.21,0.023
+LinearSVC_C10.0_balanced,LinearSVC,10.0,balanced,None,0.400465,0.339051,0.369734,0.33856,79.94,0.024

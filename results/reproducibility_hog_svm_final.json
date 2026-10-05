@@ -1,0 +1,169 @@
+{
+  "model_name": "Final HOG + Linear SVM (C=0.35, balanced)",
+  "methodology": "TEST SET IS LOCKED FOR MODEL SELECTION. This evaluation is performed only after hyperparameter selection is complete.",
+  "hog_configuration": {
+    "orientations": 9,
+    "pixels_per_cell": [
+      8,
+      8
+    ],
+    "cells_per_block": [
+      2,
+      2
+    ],
+    "block_norm": "L2-Hys"
+  },
+  "svm_configuration": {
+    "classifier": "LinearSVC",
+    "C": 0.35,
+    "class_weight": "balanced",
+    "random_state": 42,
+    "max_iter": 2000,
+    "dual": "auto"
+  },
+  "training_samples": 22347,
+  "validation_samples": 5586,
+  "combined_training_samples": 27933,
+  "test_samples": 7178,
+  "feature_dimension": 900,
+  "random_state": 42,
+  "selection_metric": "Validation Macro F1",
+  "selected_validation_metrics": {
+    "accuracy": 0.4076,
+    "macro_precision": 0.3463,
+    "macro_recall": 0.393,
+    "macro_f1": 0.3463
+  },
+  "final_test_metrics": {
+    "accuracy": 0.40652,
+    "macro_precision": 0.348707,
+    "macro_recall": 0.408931,
+    "macro_f1": 0.348627
+  },
+  "confusion_matrix": [
+    [
+      222,
+      112,
+      77,
+      157,
+      152,
+      116,
+      122
+    ],
+    [
+      15,
+      64,
+      5,
+      8,
+      6,
+      9,
+      4
+    ],
+    [
+      108,
+      102,
+      175,
+      161,
+      149,
+      126,
+      203
+    ],
+    [
+      96,
+      62,
+      72,
+      1227,
+      93,
+      118,
+      106
+    ],
+    [
+      117,
+      92,
+      96,
+      215,
+      457,
+      134,
+      122
+    ],
+    [
+      162,
+      110,
+      113,
+      250,
+      243,
+      272,
+      97
+    ],
+    [
+      53,
+      46,
+      51,
+      94,
+      54,
+      32,
+      501
+    ]
+  ],
+  "classification_report": {
+    "angry": {
+      "precision": 0.2871927554980595,
+      "recall": 0.23173277661795408,
+      "f1-score": 0.2564991334488735,
+      "support": 958.0
+    },
+    "disgust": {
+      "precision": 0.10884353741496598,
+      "recall": 0.5765765765765766,
+      "f1-score": 0.18311874105865522,
+      "support": 111.0
+    },
+    "fear": {
+      "precision": 0.29711375212224106,
+      "recall": 0.1708984375,
+      "f1-score": 0.21698698078115314,
+      "support": 1024.0
+    },
+    "happy": {
+      "precision": 0.5809659090909091,
+      "recall": 0.6916572717023676,
+      "f1-score": 0.631497683993824,
+      "support": 1774.0
+    },
+    "neutral": {
+      "precision": 0.39601386481802425,
+      "recall": 0.3706407137064071,
+      "f1-score": 0.38290741516547966,
+      "support": 1233.0
+    },
+    "sad": {
+      "precision": 0.33705080545229243,
+      "recall": 0.2181234963913392,
+      "f1-score": 0.26484907497565724,
+      "support": 1247.0
+    },
+    "surprise": {
+      "precision": 0.43376623376623374,
+      "recall": 0.6028880866425993,
+      "f1-score": 0.5045317220543807,
+      "support": 831.0
+    },
+    "accuracy": 0.4065199219838395,
+    "macro avg": {
+      "precision": 0.34870669402324656,
+      "recall": 0.40893105130532065,
+      "f1-score": 0.3486272502111462,
+      "support": 7178.0
+    },
+    "weighted avg": {
+      "precision": 0.4027775825160243,
+      "recall": 0.4065199219838395,
+      "f1-score": 0.3942855127120852,
+      "support": 7178.0
+    }
+  },
+  "timestamp": "2026-10-06 00:35:50",
+  "sklearn_version": "1.8.0",
+  "numpy_version": "2.4.4",
+  "python_version": "3.13.7"
+}
