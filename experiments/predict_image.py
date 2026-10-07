@@ -31,12 +31,12 @@ def predict_image(image_path: Path, model_path: Path = DEFAULT_MODEL_PATH):
     if not model_path.exists():
         raise FileNotFoundError(f"Trained model not found at: {model_path}")
 
-    # 1. Load image and ensure grayscale 48x48 representation
+    # 1. Detect face, crop, resize to 48x48, and normalize to float32
     with Image.open(image_path) as img:
-        img_gray = img.convert("L")
-        if img_gray.size != (48, 48):
-            img_gray = img_gray.resize((48, 48))
-        img_arr = np.asarray(img_gray, dtype=np.float32) / 255.0
+        from src.features.face_detection import preprocess_face_image
+        model_asset_path = str(PROJECT_ROOT / "blaze_face_short_range.tflite")
+        img_resized = preprocess_face_image(img, model_asset_path=model_asset_path)
+        img_arr = np.asarray(img_resized, dtype=np.float32) / 255.0
 
     # 2. Load model
     model = HOGLinearSVM.load(model_path)

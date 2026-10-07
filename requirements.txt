@@ -3,3 +3,6 @@ scikit-image
 scikit-learn
 joblib
 matplotlib
+pillow
+flask
+mediapipe

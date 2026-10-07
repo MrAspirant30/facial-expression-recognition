@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facial Expression Recognition | HOG + Linear SVM</title>
+  <meta name="description" content="Facial expression recognition demonstration using classical Histogram of Oriented Gradients (HOG) and Linear Support Vector Classifier on FER2013.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-badges">
+        <span class="badge badge-primary">FER2013 Machine Learning</span>
+        <span class="badge badge-accent">HOG (900-D) + Linear SVM</span>
+        <span class="badge badge-success">Final Champion (C=0.35)</span>
+      </div>
+      <h1 class="app-title">Facial Expression Recognition</h1>
+      <p class="app-subtitle">
+        Real-time emotion classification demo using classical computer vision. Preprocesses face-centered portraits with Pillow, extracts 900-D Histogram of Oriented Gradients (HOG) features, and predicts using our champion LinearSVC model.
+      </p>
+    </header>
+
+    <!-- Error Alert (if any) -->
+    {% if error %}
+    <div class="alert alert-error" role="alert" id="errorAlert">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-content">
+        <div class="alert-title">Processing Notice</div>
+        <div class="alert-message">{{ error }}</div>
+      </div>
+      <button type="button" class="alert-close" onclick="document.getElementById('errorAlert').style.display='none'">&times;</button>
+    </div>
+    {% endif %}
+
+    <!-- Main Content Grid -->
+    <main class="main-grid">
+      <!-- Left Panel: Upload & Controls -->
+      <section class="card upload-card">
+        <div class="card-header">
+          <h2 class="card-title">1. Upload a photo — face detected automatically</h2>
+          <span class="card-badge">MediaPipe + Pillow In-Memory</span>
+        </div>
+
+        <div class="guide-banner">
+          <span class="guide-icon">💡</span>
+          <div class="guide-text">
+            <strong>Upload a photo containing a face for best results.</strong>
+            <p class="guide-disclaimer">
+              This demo automatically detects and crops the largest face using MediaPipe before classifying the emotion.
+            </p>
+          </div>
+        </div>
+
+        <form action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data" id="uploadForm" class="upload-form">
+          <!-- Drag & Drop Zone -->
+          <div class="drop-zone" id="dropZone">
+            <input type="file" name="image" id="imageInput" accept=".png,.jpg,.jpeg,.webp" class="file-input" required>
+            
+            <div class="drop-prompt" id="dropPrompt">
+              <div class="upload-icon-wrapper">
+                <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              <p class="drop-text-primary">Click to browse or drag & drop a photo</p>
+              <p class="drop-text-secondary">Supported: PNG, JPG, JPEG, WEBP (Max 10 MB)</p>
+            </div>
+
+            <!-- Client-side Image Preview -->
+            <div class="preview-box" id="previewBox" style="display: none;">
+              <img id="previewImg" src="#" alt="Selected Image Preview" class="preview-img">
+              <div class="preview-overlay">
+                <span id="previewFilename" class="preview-filename">image.jpg</span>
+                <button type="button" class="btn-change" id="btnChange">Change Image</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="predictBtn" disabled>
+              <span class="btn-text">Predict Emotion</span>
+              <span class="btn-spinner" id="btnSpinner" style="display: none;"></span>
+            </button>
+            <button type="button" class="btn btn-secondary" id="resetBtn" style="display: none;">
+              Clear
+            </button>
+          </div>
+        </form>
+
+        <!-- Privacy & Local Processing Notice -->
+        <div class="privacy-note">
+          <svg class="privacy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+          <div class="privacy-text">
+            <strong>Privacy Guaranteed:</strong> Uploaded images are processed strictly in-memory by this local Flask application. They are never saved permanently to disk and are never added to any training dataset.
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Panel: Results & Analysis -->
+      <section class="card results-card">
+        <div class="card-header">
+          <h2 class="card-title">2. Model Prediction & Decision Analysis</h2>
+          {% if result %}
+          <span class="latency-badge">{{ result.latency_ms }} ms</span>
+          {% endif %}
+        </div>
+
+        {% if result %}
+        <!-- Active Prediction Result View -->
+        <div class="result-active">
+          <!-- Primary Emotion Hero Banner -->
+          <div class="hero-emotion">
+            <div class="hero-emoji">{{ result.prediction.predicted_emoji }}</div>
+            <div class="hero-details">
+              <div class="hero-subtitle">PREDICTED EMOTION</div>
+              <div class="hero-title">{{ result.prediction.predicted_label | upper }}</div>
+              <div class="hero-status">Final Champion HOG + Linear SVM</div>
+            </div>
+          </div>
+
+          <!-- Preprocessing Visual Pipeline: Uploaded vs 48x48 Crop -->
+          <div class="pipeline-visual">
+            <div class="pipeline-step">
+              <div class="step-label">Uploaded Image</div>
+              <div class="img-wrapper">
+                <img src="{{ result.uploaded_image }}" alt="Uploaded Portrait" class="pipeline-img">
+              </div>
+            </div>
+            <div class="pipeline-arrow">➔</div>
+            <div class="pipeline-step">
+              <div class="step-label">48×48 Standardized HOG Input</div>
+              <div class="img-wrapper crop-wrapper">
+                <img src="{{ result.crop_image }}" alt="48x48 Grayscale Crop" class="pipeline-crop">
+              </div>
+              <span class="crop-sublabel">Input to 900-D Extractor</span>
+            </div>
+          </div>
+
+          <!-- SVM Decision Scores Breakdown -->
+          <div class="scores-section">
+            <div class="scores-header">
+              <h3 class="scores-title">SVM Decision Scores</h3>
+              <span class="scores-info-tag">Hyperplane Distance</span>
+            </div>
+            <p class="scores-explanation">
+              Values indicate signed Euclidean distance to each one-vs-rest separating hyperplane. Relative scores are normalized for visualization (not calibrated probabilities).
+            </p>
+
+            <div class="scores-list">
+              {% for score in result.prediction.scores %}
+              <div class="score-row {% if score.is_winner %}winner-row{% endif %}">
+                <div class="score-class-info">
+                  <span class="score-emoji">{{ score.emoji }}</span>
+                  <span class="score-name">{{ score.label }}</span>
+                  {% if score.is_winner %}
+                  <span class="winner-tag">Selected</span>
+                  {% endif %}
+                </div>
+
+                <div class="score-bar-track">
+                  <div class="score-bar-fill" data-score-pct="{{ score.relative_score }}" data-score-color="{{ score.color }}"></div>
+                </div>
+
+                <div class="score-values">
+                  <span class="raw-score">{{ '%+.3f'|format(score.raw_score) }}</span>
+                  <span class="relative-score">{{ score.relative_score }}%</span>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        {% else %}
+        <!-- Empty / Idle State -->
+        <div class="empty-state">
+          <div class="empty-icon-circle">
+            <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h3 class="empty-title">Awaiting Image Upload</h3>
+          <p class="empty-text">
+            Upload any photo on the left and click <strong>Predict Emotion</strong>. MediaPipe detects the largest face, Pillow standardizes it to 48×48 grayscale, extracts 900 HOG features, and computes hyperplane decision scores across all 7 emotions.
+          </p>
+          <div class="emotion-pills">
+            <span>😠 Angry</span>
+            <span>🤢 Disgust</span>
+            <span>😨 Fear</span>
+            <span>😊 Happy</span>
+            <span>😐 Neutral</span>
+            <span>😢 Sad</span>
+            <span>😲 Surprise</span>
+          </div>
+        </div>
+        {% endif %}
+      </section>
+    </main>
+
+    <!-- Model Specifications Footer -->
+    <footer class="model-spec-card">
+      <div class="spec-header">
+        <h3 class="spec-title">System Architecture & Model Specifications</h3>
+      </div>
+      <div class="spec-grid">
+        <div class="spec-item">
+          <div class="spec-label">Feature Extractor</div>
+          <div class="spec-val">HOG (Histogram of Oriented Gradients)</div>
+          <div class="spec-sub">9 bins, 8×8 cell, 2×2 block, L2-Hys norm</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-label">Feature Dimension</div>
+          <div class="spec-val">900 numeric float32 features</div>
+          <div class="spec-sub">Extracted from 48×48 normalized grayscale image</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-label">Classifier</div>
+          <div class="spec-val">Linear Support Vector Classifier (LinearSVC)</div>
+          <div class="spec-sub">C = 0.35, class_weight = 'balanced', random_state = 42</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-label">Training Protocol</div>
+          <div class="spec-val">FER2013 Clean Split</div>
+          <div class="spec-sub">Combined Train + Validation: 27,933 samples</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-label">Preprocessing Tool</div>
+          <div class="spec-val">MediaPipe + Pillow Pipeline</div>
+          <div class="spec-sub">Face detect & crop -> Grayscale ('L') -> 48×48 resize</div>
+        </div>
+        <div class="spec-item">
+          <div class="spec-label">Target Classes</div>
+          <div class="spec-val">7 Discrete Facial Expressions</div>
+          <div class="spec-sub">Angry, Disgust, Fear, Happy, Neutral, Sad, Surprise</div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Interactive Client-side Script -->
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const imageInput = document.getElementById('imageInput');
+    const dropPrompt = document.getElementById('dropPrompt');
+    const previewBox = document.getElementById('previewBox');
+    const previewImg = document.getElementById('previewImg');
+    const previewFilename = document.getElementById('previewFilename');
+    const predictBtn = document.getElementById('predictBtn');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const resetBtn = document.getElementById('resetBtn');
+    const btnChange = document.getElementById('btnChange');
+    const uploadForm = document.getElementById('uploadForm');
+
+    function handleFile(file) {
+      if (!file) return;
+
+      const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        alert('Unsupported file format. Please upload a PNG, JPG, or WEBP image.');
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size exceeds the 10 MB limit.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewImg.src = e.target.result;
+        previewFilename.textContent = file.name;
+        dropPrompt.style.display = 'none';
+        previewBox.style.display = 'block';
+        predictBtn.disabled = false;
+        resetBtn.style.display = 'inline-block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    imageInput.addEventListener('change', function(e) {
+      if (this.files && this.files[0]) {
+        handleFile(this.files[0]);
+      }
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add('drag-active');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('drag-active');
+      }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      if (dt.files && dt.files[0]) {
+        imageInput.files = dt.files;
+        handleFile(dt.files[0]);
+      }
+    });
+
+    btnChange.addEventListener('click', (e) => {
+      e.stopPropagation();
+      imageInput.click();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      imageInput.value = '';
+      previewImg.src = '#';
+      dropPrompt.style.display = 'flex';
+      previewBox.style.display = 'none';
+      predictBtn.disabled = true;
+      resetBtn.style.display = 'none';
+    });
+
+    uploadForm.addEventListener('submit', () => {
+      predictBtn.disabled = true;
+      btnSpinner.style.display = 'inline-block';
+    });
+
+    // Initialize & animate decision score progress bars
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.score-bar-fill').forEach((bar) => {
+        const pct = bar.getAttribute('data-score-pct');
+        const color = bar.getAttribute('data-score-color');
+        if (pct) {
+          requestAnimationFrame(() => {
+            bar.style.width = pct + '%';
+            if (color) bar.style.backgroundColor = color;
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
